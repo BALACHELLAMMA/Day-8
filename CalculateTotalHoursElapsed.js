@@ -1,84 +1,87 @@
-// 2. Convert string to arithmetic operation
-// For example accept a string like "10 + 20"
-// and return output as 30
-// b. "20 - 10" //Output 10
-// Only string input is allowed which you have to parse and get a number output
-// eval is not allowed
+// 3. Calculate total hours passed between two time
+// Accepted input format example "9:00 AM"
+// Ex: calculateTotalHoursElapsed("9:00 AM", "10:00 AM") //Output 1 Hour
+// Ex: calculateTotalHoursElapsed("9:00 AM", "3:12 PM") // Output 6 Hour 12 minutes
 
 
-
-
-// Regex for identifying multiplication (x * y)
-let multiplicationRegex = /(\d+(?:\.\d+)?) ?\* ?(\d+(?:\.\d+)?)/ 
-
-// Regex for identifying division (x / y)
-let divisionRegex = /(\d+(?:\.\d+)?) ?\/ ?(\d+(?:\.\d+)?)/ 
-
-// Regex for identifying addition (x + y)
-let additionRegex = /(\d+(?:\.\d+)?) ?\+ ?(\d+(?:\.\d+)?)/ 
-
-// Regex for identifying subtraction (x - y)
-let subtractionRegex = /(\d+(?:\.\d+)?) ?- ?(\d+(?:\.\d+)?)/  
-
-function evaluateStringExpression(expression)
-{
-    //type check
-    if(typeof expression === "string")
-    {
-        //evaluated expression
-        let newExpression;
-        
-        //check the expression with which type of Regex 
-        //and evaluate expression
-       
-       if(multiplicationRegex.test(expression))
-        {
-            newExpression = expression.replace(multiplicationRegex, function(match, operand1, operand2) {
-                
-                return Number(operand1) * Number(operand2);
-            });
-            return evaluateStringExpression(newExpression);
-        }
-        else if(divisionRegex.test(expression))
-        {
-            newExpression = expression.replace(divisionRegex, function(match, operand1, operand2) {
-                if(operand2 != 0)
-                   return Number(operand1) / Number(operand2);
-                else
-                   console.error("Division by zero");
-            });
-            return evaluateStringExpression(newExpression);
-        }
-        
-        else if(subtractionRegex.test(expression))
-        {
-            newExpression = expression.replace(subtractionRegex, function(match, operand1, operand2) {
-                return Number(operand1) - Number(operand2);
-            });
-            return evaluateStringExpression(newExpression);
-        }
-        else if(additionRegex.test(expression))
-        {
-            newExpression = expression.replace(additionRegex, function(match, operand1, operand2) {
-                
-                return Number(operand1) + Number(operand2);
-            });
-            // console.log(newExpression);
-            return evaluateStringExpression(newExpression);
-        }
-       
-    }
-    else{
-        console.error("Invalid expression");
-        return false;
-    }
-    return expression;
+//to check the format of time
+function checkTimeFormat(time) {
+    const regex = /(\d+):(\d+) ([APap][Mm])/; // Regex to match "hh:mm AM/PM"
+    return time.match(regex); //true if it matches
 }
 
-const inputString = "20*10"
-//"2 + 4*(30/5) - 34 + 45/2";
-console.log(evaluateStringExpression(inputString));
-// console.log(evaluateStringExpression([]));
 
-// console.log(isNaN("10+30"))
-// console.log(Number("10+30"))
+function timeIntoMinutes(inputTime) {
+    let [hours, minutes, ampm] = inputTime.split(/:| /);  
+    minutes = parseInt(minutes);
+    if (ampm === 'pm') {
+        minutes += 12 * 60; // Add 12 hours for PM
+    }
+    return minutes;
+}
+
+
+function calculateTotalHoursElapsed(time1, time2) {
+
+    //type and format check
+ if(typeof time1 === 'string' && typeof time2 === 'string' && checkTimeFormat(time1) && checkTimeFormat(time2)){
+
+    time1 = time1.replace(/\s+/g, ''); // Remove spaces
+    time2 = time2.replace(/\s+/g, '');
+  
+    //works for both lower and uppercase (am or AM)
+    time1 = time1.toLowerCase();
+    time2 = time2.toLowerCase();
+
+    const hour1 = parseInt(time1);
+    const am1 = time1.includes('am');
+    const hour2 = parseInt(time2);
+    const am2 = time2.includes('am');
+
+    let minuteDifference , minutes;
+
+    if(hour1 === 12 && hour2 === 12){
+        minuteDifference = timeIntoMinutes(time1) - timeIntoMinutes(time2);
+        minutes = Math.abs(minuteDifference % 60); 
+        return `${hour1} hours ${minutes} minutes`;
+    }
+    else if(hour1 === 12 || hour2 === 12){
+        minuteDifference = timeIntoMinutes(time1) - timeIntoMinutes(time2);
+        minutes = Math.abs(minuteDifference % 60); 
+        return `${hour1+hour2} hours ${minutes} minutes`;
+    }
+    else{   
+         // the time difference in hours
+         let hoursDifference = Math.abs(hour2 - hour1);
+
+         // check  AM/PM
+         if (am1 && !am2)
+            hoursDifference += 12;
+         else if (!am1 && am2) 
+            hoursDifference -= 12;
+        
+
+        // check the result is positive and within 24 hours
+        hoursDifference = (hoursDifference + 24) % 24;
+
+        //the difference in minutes
+        minuteDifference = timeIntoMinutes(time1) - timeIntoMinutes(time2);
+        minutes = Math.abs(minuteDifference % 60); 
+        return `${hoursDifference} hours ${minutes} minutes`;
+    }
+
+  }
+  else{
+    console.error("Invalid input");
+    return false;
+  }
+
+
+} 
+
+
+const time1 = "02:10 AM";
+const time2 = "04:00 PM";
+
+console.log(calculateTotalHoursElapsed(time1, time2));
+console.log(calculateTotalHoursElapsed('',[]));
