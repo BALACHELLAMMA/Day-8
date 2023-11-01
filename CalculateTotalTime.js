@@ -37,7 +37,19 @@ function calculateTotalHoursElapsed(time1,time2){
     const hours = Math.floor(totalMinutes/60);
     const minutes = totalMinutes%60;
 
-    return `${hours} hours ${minutes} minutes`;
+    if (hours === 0 && minutes === 0) {
+        return "No time elapsed";
+    } 
+    else if (hours === 0) {
+        return `${minutes} minute${minutes === 1 ? '' : 's'}`;
+    } 
+    else if (minutes === 0) {
+        return `${hours} hour${hours === 1 ? '' : 's'}`;
+    }
+    else {
+        return `${hours} hour${hours === 1 ? '' : 's'} ${minutes} minute${minutes === 1 ? '' : 's'}`;
+    }
+
 }
 else{
         console.error("Invalid time");
@@ -47,4 +59,4 @@ else{
 
 }
 
-console.log(calculateTotalHoursElapsed("02:00 PM","12:00 AM"));
+console.log(calculateTotalHoursElapsed("02:00 PM","03:01 PM"));
