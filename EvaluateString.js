@@ -75,7 +75,7 @@ function evaluateStringExpression(expression)
     return expression;
 }
 
-const inputString = "20*10+30"
+const inputString = "20*10"
 //"2 + 4*(30/5) - 34 + 45/2";
 console.log(evaluateStringExpression(inputString));
 // console.log(evaluateStringExpression([]));
