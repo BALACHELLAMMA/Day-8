@@ -37,18 +37,10 @@ function calculateTotalHoursElapsed(time1,time2){
     const hours = Math.floor(totalMinutes/60);
     const minutes = totalMinutes%60;
 
-    if (hours === 0 && minutes === 0) {
-        return "No time elapsed";
-    } 
-    else if (hours === 0) {
-        return `${minutes} minute${minutes === 1 ? '' : 's'}`;
-    } 
-    else if (minutes === 0) {
-        return `${hours} hour${hours === 1 ? '' : 's'}`;
-    }
-    else {
-        return `${hours} hour${hours === 1 ? '' : 's'} ${minutes} minute${minutes === 1 ? '' : 's'}`;
-    }
+    const formatHours = hours === 1 ? 'hour' : 'hours';
+    const formatMinutes = minutes === 1 ? 'minute' : 'minutes';
+
+    return `${hours} ${formatHours} ${minutes} ${formatMinutes}`;
 
 }
 else{
